@@ -111,6 +111,7 @@ class SqliteDriver(AbstractDriver):
         self.database = None
         self.conn = None
         self.cursor = None
+        self.logfile = open("/temp/yingjun/", "w")
     
     ## ----------------------------------------------
     ## makeDefaultConfig
@@ -172,6 +173,8 @@ class SqliteDriver(AbstractDriver):
         o_carrier_id = params["o_carrier_id"]
         ol_delivery_d = params["ol_delivery_d"]
 
+        logfile.write("delivery: "+", ".join([str(i) for i in params.values()])+"\n")
+
         result = [ ]
         for d_id in range(1, constants.DISTRICTS_PER_WAREHOUSE+1):
             self.cursor.execute(q["getNewOrder"], [d_id, w_id])
@@ -220,6 +223,8 @@ class SqliteDriver(AbstractDriver):
         i_ids = params["i_ids"]
         i_w_ids = params["i_w_ids"]
         i_qtys = params["i_qtys"]
+
+        logfile.write("new_order: "+", ".join([str(i) for i in params.values()])+"\n")
             
         assert len(i_ids) > 0
         assert len(i_ids) == len(i_w_ids)
@@ -346,6 +351,8 @@ class SqliteDriver(AbstractDriver):
         d_id = params["d_id"]
         c_id = params["c_id"]
         c_last = params["c_last"]
+
+        logfile.write("order_status: "+", ".join([str(i) for i in params.values()])+"\n")
         
         assert w_id, pformat(params)
         assert d_id, pformat(params)
@@ -390,6 +397,8 @@ class SqliteDriver(AbstractDriver):
         c_id = params["c_id"]
         c_last = params["c_last"]
         h_date = params["h_date"]
+
+        logfile.write("payment: "+", ".join([str(i) for i in params.values()])+"\n")
 
         if c_id != None:
             self.cursor.execute(q["getCustomerByCustomerId"], [w_id, d_id, c_id])
@@ -454,6 +463,8 @@ class SqliteDriver(AbstractDriver):
         w_id = params["w_id"]
         d_id = params["d_id"]
         threshold = params["threshold"]
+
+        logfile.write("stock_level: "+", ".join([str(i) for i in params.values()])+"\n")
         
         self.cursor.execute(q["getOId"], [w_id, d_id])
         result = self.cursor.fetchone()
